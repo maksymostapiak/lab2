@@ -1,0 +1,17 @@
+FROM ubuntu:24.04 AS builder
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y g++
+COPY main.cpp .
+
+RUN g++ main.cpp -o myapp
+
+
+FROM ubuntu:24.04
+
+ENV APP_ENV=production_multi
+WORKDIR /app
+
+COPY --from=builder /build/myapp .
+
+CMD ["./myapp"]
